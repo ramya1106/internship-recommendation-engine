@@ -1,0 +1,117 @@
+.loader-bg {
+  background-color: #000000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.job-item-details-page {
+  padding: 20px 80px;
+  font-family: monospace;
+  background-color: #000000;
+  min-height: 100vh;
+  height: 100%;
+}
+
+.job-item-details-container {
+  background-color: #272727;
+  padding: 30px;
+  border-radius: 10px;
+  margin: auto;
+}
+
+.failure-view-img {
+  width: 30%;
+  margin-bottom: 20px;
+}
+.failure-view-title {
+  font-size: 24px;
+  color: #ffffff;
+}
+.failure-view-description {
+  font-size: 16px;
+  color: #ffffff;
+}
+.retry-button, .apply-button {
+  font-size: 15px;
+  color: #ffffff;
+  background-color: #4f46e5;
+  padding: 10px 20px;
+  border: 0px;
+  font-family: monospace;
+  border-radius: 5px;
+}
+
+.apply-button{
+  margin-top: 20px;
+}
+
+.job-description {
+  color: #cbd5e1;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 18px;
+}
+
+.skills-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.skills-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1f1f1f;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 0px;
+}
+
+.skill-logo {
+  width: 30px;
+  height: 30px;
+}
+
+.skill-name {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.job-details-section-subtitle {
+  color: #ffffff;
+  font-size: 18px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+
+@media (max-width: 768px) {
+  .job-item-details-page {
+    padding: 20px;
+  }
+  .job-item-details-container {
+    padding: 20px;
+  }
+  .loader-bg {
+    min-height: 16vh;
+  }
+  .failure-view-img {
+    width: 80%;
+  }
+  .failure-view-title {
+    font-size: 18px;
+    margin-bottom: 0px;
+  }
+  .failure-view-description {
+    font-size: 15px;
+  }
+  .icon{
+    display: none;
+  }
+}
