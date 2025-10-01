@@ -1,3 +1,106 @@
-node_modules/ 
-*.pack 
-node_modules/ 
+# --- React App --- #
+# dependencies
+/react-app/node_modules
+/react-app/.pnp
+/react-app/.pnp.js
+
+# testing
+/react-app/coverage
+
+# production
+/react-app/build
+
+# misc
+/react-app/.DS_Store
+/react-app/.env.local
+/react-app/.env.development.local
+/react-app/.env.test.local
+/react-app/.env.production.local
+
+/react-app/npm-debug.log*
+/react-app/yarn-debug.log*
+/react-app/yarn-error.log*
+
+# reccomendation_system project
+reccomendation_system/HELP.md
+reccomendation_system/target/
+reccomendation_system/.mvn/wrapper/maven-wrapper.jar
+!reccomendation_system//src/main//target/
+!reccomendation_system//src/test//target/
+
+### STS ###
+reccomendation_system/.apt_generated
+reccomendation_system/.classpath
+reccomendation_system/.factorypath
+reccomendation_system/.project
+reccomendation_system/.settings
+reccomendation_system/.springBeans
+reccomendation_system/.sts4-cache
+
+### IntelliJ IDEA ###
+reccomendation_system/.idea
+reccomendation_system/*.iws
+reccomendation_system/*.iml
+reccomendation_system/*.ipr
+
+### NetBeans ###
+reccomendation_system/nbproject/private/
+reccomendation_system/nbbuild/
+reccomendation_system/dist/
+reccomendation_system/nbdist/
+reccomendation_system/.nb-gradle/
+reccomendation_system/build/
+!reccomendation_system//src/main//build/
+!reccomendation_system//src/test//build/
+
+### VS Code ###
+reccomendation_system/.vscode/
+reccomendation_system/application-local.properties
+
+
+
+# Byte-compiled / optimized / DLL files
+_pycache_/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+pip-wheel-metadata/
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv/
+
+# Django project files
+ml/_pycache_/
+ml/migrations/_pycache_/
+ml/db.sqlite3
+ml/media/
+ml/staticfiles/
+
+# IDEs
+.vscode/
+.idea/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# dotenv environment files
+.env
