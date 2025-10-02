@@ -55,7 +55,7 @@ reccomendation_system/build/
 
 ### VS Code ###
 reccomendation_system/.vscode/
-reccomendation_system/*/application-local.properties 
+reccomendation_system/**/application-local.properties 
 
 
 
