@@ -43,11 +43,15 @@ public class User {
     private double experience;
 
     @Column(name = "percentage")
-    @ColumnDefault("0") //TODO : UPDATE DEFAULT
+    @ColumnDefault("0")
     private double percentage;
 
+    // TODO : DELETE AFTER UPDATING DATA
     @Column(name = "highestqualification")
     private String highestQualification;
+
+    @Column(name = "highes_qualification_rank")
+    private int highestQualificationRank;
 
     @Column(name = "stream")
     private String stream;
