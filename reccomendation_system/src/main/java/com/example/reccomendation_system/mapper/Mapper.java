@@ -6,9 +6,11 @@ import com.example.reccomendation_system.dto.UserDTO;
 import com.example.reccomendation_system.dto.ml_model_dtos.InternshipInfoDTO;
 import com.example.reccomendation_system.dto.ml_model_dtos.UserInfoDTO;
 import com.example.reccomendation_system.model.*;
+import com.example.reccomendation_system.util.QualificationConstants;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Component
 public class Mapper {
@@ -32,8 +34,9 @@ public class Mapper {
         for (InternshipSkill internshipSkill : internshipSkills) {
             requiredSkills.add(internshipSkill.getSkill());
         }
-
-        return new InternshipDetailsDTO(internship.getTitle(), internship.getSector(), internship.getField(), internship.getTotalCount(), internship.getAppliedCount(), internship.getDescription(), address, internshipRequirements.getMinimumQualification(), internshipRequirements.getStream(), internshipRequirements.getSpecialization(), requiredSkills, internshipRequirements.getDescription(), internship.getBenefits());
+        HashMap<Integer, String> rankQualifiction = QualificationConstants.RANK_QUALIFICATIONS;
+        String minimumQualification = rankQualifiction.get(internshipRequirements.getMinimumQualificationRank());
+        return new InternshipDetailsDTO(internship.getTitle(), internship.getSector(), internship.getField(), internship.getTotalCount(), internship.getAppliedCount(), internship.getDescription(), address, minimumQualification, internshipRequirements.getStream(), internshipRequirements.getSpecialization(), requiredSkills, internshipRequirements.getDescription(), internship.getBenefits());
 
     }
 

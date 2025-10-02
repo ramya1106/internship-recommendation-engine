@@ -46,11 +46,12 @@ public class User {
     @ColumnDefault("0")
     private double percentage;
 
-    // TODO : DELETE AFTER UPDATING DATA
-    @Column(name = "highestqualification")
-    private String highestQualification;
+//    // TODO : DELETE AFTER UPDATING DATA
+//    @Column(name = "highestqualification")
+//    private String highestQualification;
 
-    @Column(name = "highes_qualification_rank")
+    @Column(name = "highest_qualification_rank")
+    @ColumnDefault("0")
     private int highestQualificationRank;
 
     @Column(name = "stream")

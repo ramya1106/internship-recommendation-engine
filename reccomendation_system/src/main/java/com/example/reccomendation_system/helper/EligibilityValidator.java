@@ -25,7 +25,7 @@ public class EligibilityValidator {
     public ArrayList<InternshipDTO> getAllEligibleInternships(int userId) {
         try {
             User user = userJpaRepository.findById(userId).get();
-            List<InternshipDTO> eligibleInternships = internshipRequirementsJpaRepository.findValidInternships(user.getAge(), user.getGender());
+            List<InternshipDTO> eligibleInternships = internshipRequirementsJpaRepository.findValidInternships(user.getAge(), user.getGender(), user.getHighestQualificationRank());
 
             return new ArrayList<>(eligibleInternships);
         } catch (Exception e) {

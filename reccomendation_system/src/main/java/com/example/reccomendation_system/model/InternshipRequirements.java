@@ -39,10 +39,11 @@ public class InternshipRequirements {
     private String gender;
 
     // TODO : DELETE AFTER DATA POPULATION
-    @Column(name = "minimum_qualification")
-    private String minimumQualification;
+//    @Column(name = "minimum_qualification")
+//    private String minimumQualification;
 
     @Column(name = "minimum_qualification_rank")
+    @ColumnDefault("0")
     private int minimumQualificationRank;
 
     @Column(name = "min_experience")

@@ -21,7 +21,8 @@ public interface InternshipRequirementsJpaRepository extends JpaRepository<Inter
        JOIN ir.internship i
        WHERE (ir.age IS NULL OR ir.age <= :age)
          AND (ir.gender IS NULL OR ir.gender = :gender OR ir.gender = 'Any')
+         AND ir.minimumQualificationRank <= :userQualificationRank
        """)
-    List<InternshipDTO> findValidInternships(int age, String gender);
+    List<InternshipDTO> findValidInternships(int age, String gender, int userQualificationRank);
 
 }

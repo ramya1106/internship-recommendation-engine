@@ -46,10 +46,10 @@ public class InternshipController {
         return mlModelService.getTopFiveInternships(userId);
     }
 
-//    @GetMapping("/eligible/{userId}")
-//    public ArrayList<InternshipDTO> getAllEligibleINternships(@PathVariable("userId") int userId) {
-//        return eligibilityValidator.getAllEligibleInternships(userId);
-//    }
+    @GetMapping("/eligible/{userId}")
+    public ArrayList<InternshipDTO> getAllEligibleInternships(@PathVariable("userId") int userId) {
+        return eligibilityValidator.getAllEligibleInternships(userId);
+    }
 
 
 }
