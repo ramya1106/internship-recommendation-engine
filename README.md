@@ -96,7 +96,6 @@ npm run build
 - Make sure the backend services are running before using the full flow.
 
 ---
----
 
 ## Backend (Spring Boot)  
 
