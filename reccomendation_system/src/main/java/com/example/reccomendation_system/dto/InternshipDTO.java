@@ -24,7 +24,4 @@ public class InternshipDTO {
     private String benifits;
     private String state;
     private String district;
-
-
-
 }

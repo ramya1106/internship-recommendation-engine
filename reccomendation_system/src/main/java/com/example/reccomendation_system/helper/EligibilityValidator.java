@@ -26,7 +26,6 @@ public class EligibilityValidator {
         try {
             User user = userJpaRepository.findById(userId).get();
             List<InternshipDTO> eligibleInternships = internshipRequirementsJpaRepository.findValidInternships(user.getAge(), user.getGender(), user.getHighestQualificationRank());
-
             return new ArrayList<>(eligibleInternships);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
