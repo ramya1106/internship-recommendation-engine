@@ -12,7 +12,8 @@ The system collects user preferences, applies machine learning models (Logistic 
 -  **User Preference Collection** – Collect user preferences through an intuitive graphical interface.  
 -  **Personalized Internship Recommendations** – Suggest internships based on past applications and user behavior across the platform.  
 -  **Internship Ranking System**– Uses a machine learning model (logistic regression) to analyze how well the current user-internship details match with past applications and ranks internships accordingly.
--  **Eligibility Filtering** – Filters internships based on qualification, age, and gender.  
+-  **Eligibility Filtering** – Filters internships based on qualification, age, and gender.
+-  **Advanced Eligibility Filtering** – Skill-based compatibility checks between user skills and internship requirements.
 -  **Database Integration** – Efficient storage and retrieval of user, internship, and recommendation data.  
 
 ---
@@ -23,7 +24,18 @@ The system collects user preferences, applies machine learning models (Logistic 
 -  **Feedback-Based Recommendations** – Refined internship suggestions based on user feedback and past choices.  
 -  **Preference-Based Scoring** – Additional scoring mechanism to rank internships based on user-specific preference scores.  
 -  **Score Normalization & Hybrid Ranking** – Normalize and combine multiple factors (preference score, ML regression score, feedback score) for improved ranking accuracy.  
--  **Advanced Eligibility Filtering** – Skill-based compatibility checks between user skills and internship requirements.
+
+---
+
+### Setting up the Project  
+
+&nbsp;1.  Clone the repository & navigate to the internship-recommendation-engine folder
+
+```bash
+git clone https://github.com/ramya1106/internship-recommendation-engine
+cd internship-recommendation-engine
+```
+---
 
 ## Frontend (React JS)  
 
@@ -44,14 +56,9 @@ node -v
 npm -v
 ```
 
----
-
-### Setting up the Project  
-
-&nbsp;1.  Clone the repository 
+### Setup Instructions
 
 ```bash
-git clone https://github.com/ramya1106/internship-recommendation-engine
 cd frontend
 ```
 
@@ -95,10 +102,14 @@ npm run build
 
 ### Prerequisites  
 Before running the project, make sure you have:  
-- Java 17+  
-- Maven 3.9+  
-- MySQL Server & MySQL Workbench 
-- IntelliJ IDEA (with **Lombok** plugin installed)  
+- Java 17+  (If you don't have Java installed, download from [JDK_Download](https://www.oracle.com/in/java/technologies/downloads/))
+- Maven 3.9+ (If you don't have Maven installed, download from [Maven_Download](https://maven.apache.org/download.cgi)) 
+- MySQL Server & MySQL Workbench (If you don't have MySQL installed, download from [MySQL_Download](https://www.mysql.com/downloads/))
+- IntelliJ IDEA (with **Lombok** plugin installed)
+
+  **Notes**
+  - Don't install Maven Daemon, install Maven
+  
 
 ---
 
@@ -169,8 +180,11 @@ Update it like this:
 | GET    | `/users/{userId}` | Fetch user details |
 | POST   | `/internships/filtered/{userId}` | Get internships for a user (via ML model) |
 | GET    | `/internship/details/{internshipId}` | Internship details |
+| GET    | `/internships/eligible/{userId}` | Get internships the user is eligible for |
 
----
+
+The app will be available at: http://localhost:8080
+
 ---
 
 ## ML Model (Django + ML)
@@ -203,29 +217,27 @@ Before running the ML model, make sure you have:
 &nbsp;3. Install dependencies
 
     python -m pip install --upgrade pip
-    pip install django mysqlclient requests pandas scikit-learn joblib
+    pip install -r requirements.txt
 
 
 &nbsp;4. Configure MySQL Database
-
-&nbsp;Create database:
-
-    CREATE DATABASE internship_db;
-
 
 &nbsp;Update settings.py:
 
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'internship_db',
-        'USER': 'your_user',
-        'PASSWORD': 'your_password',
+        'NAME': '<mysql_database_name>',
+        'USER': '<mysql_username>',
+        'PASSWORD': '<mysql_password>',
         'HOST': 'localhost',
         'PORT': '3306',
     }
 }
 
+**Notes**
+
+- Replace `<mysql_database_name>`, `<mysql_user_name>`, and `<mysql_password>` with your MySQL credentials.
 
 &nbsp;5. Apply Migrations
 
