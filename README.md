@@ -57,6 +57,7 @@ npm -v
 ```
 
 ### Setup Instructions
+&nbsp;1. Move to frontend folder
 
 ```bash
 cd frontend
