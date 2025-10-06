@@ -38,9 +38,8 @@ public class EligibilityFilteringThroughNativeQuery {
             int highestQualificationRank = user.getHighestQualificationRank();
             double threshold = 0.3;
             String queryStatement = """
-                           SELECT i.id
-                           FROM internship i JOIN internship_requirements i_r
-                           ON i.id = i_r.internship_id
+                           SELECT i_r.internship_id
+                           FROM internship_requirements i_r
                            JOIN internship_skill i_s ON i_r.internship_id = i_s.internship_id
                            LEFT JOIN user_skill u_s ON i_s.skill_id = u_s.skill_id
                            WHERE
@@ -69,5 +68,4 @@ public class EligibilityFilteringThroughNativeQuery {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
-
 }

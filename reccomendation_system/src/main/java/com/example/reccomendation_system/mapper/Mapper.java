@@ -1,5 +1,4 @@
 package com.example.reccomendation_system.mapper;
-
 import com.example.reccomendation_system.dto.InternshipDTO;
 import com.example.reccomendation_system.dto.InternshipDetailsDTO;
 import com.example.reccomendation_system.dto.UserDTO;
@@ -8,7 +7,6 @@ import com.example.reccomendation_system.dto.ml_model_dtos.UserInfoDTO;
 import com.example.reccomendation_system.model.*;
 import com.example.reccomendation_system.util.QualificationConstants;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -71,19 +69,14 @@ public class Mapper {
     }
 
     public UserInfoDTO toUserInfoDTO(User user) {
-
         ArrayList<String> skillNames = new ArrayList<>();
         ArrayList<UserSkill> skills = new ArrayList<>(user.getSkills());
-
         for (UserSkill userSkill : skills) {
             skillNames.add(userSkill.getSkill().getSkillName());
         }
-
         String location = "Hyderabad";
         double gpa = user.getPercentage() / 10;
-
         return new UserInfoDTO(user.getAge(), user.getGender(), skillNames, location, 2023, gpa, user.getExperience());
-
     }
 
     public InternshipInfoDTO toInternshipInfoDTO(Internship internship, InternshipRequirements internshipRequirements) {
@@ -94,12 +87,8 @@ public class Mapper {
         for (InternshipSkill internshipSkill : internshipSkills) {
             skillNames.add(internshipSkill.getSkill().getSkillName());
         }
-
         String location = "Hyderabad";
         String companyName = internship.getCompany().getCompanyName();
         return new InternshipInfoDTO(String.valueOf(internship.getId()), skillNames, location, companyName, internship.getSector(), internship.getTitle());
-
     }
-
-
 }
