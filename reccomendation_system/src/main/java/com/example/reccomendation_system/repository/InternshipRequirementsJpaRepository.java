@@ -25,4 +25,10 @@ public interface InternshipRequirementsJpaRepository extends JpaRepository<Inter
        """)
     List<InternshipDTO> findValidInternships(int age, String gender, int userQualificationRank);
 
+    @Query("""
+            SELECT ir.mode FROM InternshipRequirements ir JOIN ir.internship i
+            WHERE i.id = :internshipId
+            """)
+    String findModeByInternshipId(int internshipId);
+
 }

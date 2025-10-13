@@ -41,11 +41,11 @@ public class InternshipController {
         return mlModelService.getTopFiveInternships(userId);
     }
 
-    @GetMapping("/eligible/{userId}")
-    public ArrayList<InternshipDTO> getAllEligibleInternships(@PathVariable("userId") int userId) {
+    @PostMapping("/eligible/{userId}")
+    public ArrayList<InternshipDTO> getAllEligibleInternships(@PathVariable("userId") int userId, @RequestBody UserRequirements userRequirements) {
         // return eligibilityValidator.getAllEligibleInternships(userId);
         // TODO : USE NATIVE QUERY
-        return eligibilityFilteringThroughNativeQuery.getEligibleInternships(userId);
+        return eligibilityFilteringThroughNativeQuery.getEligibleInternships(userId, userRequirements);
     }
 
 

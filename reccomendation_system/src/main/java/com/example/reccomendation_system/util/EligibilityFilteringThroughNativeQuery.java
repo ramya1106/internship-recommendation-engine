@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Service
 public class EligibilityFilteringThroughNativeQuery {
@@ -22,15 +23,17 @@ public class EligibilityFilteringThroughNativeQuery {
     private final UserJpaRepository userJpaRepository;
     private final InternshipJpaRepository internshipJpaRepository;
     private final Mapper mapper;
+    private final PreferenceScoreCalculator preferenceScoreCalculator;
 
     @Autowired
-    public EligibilityFilteringThroughNativeQuery(EntityManager entityManager, UserJpaRepository userJpaRepository, InternshipJpaRepository internshipJpaRepository, Mapper mapper) {
+    public EligibilityFilteringThroughNativeQuery(EntityManager entityManager, UserJpaRepository userJpaRepository, InternshipJpaRepository internshipJpaRepository, Mapper mapper, PreferenceScoreCalculator preferenceScoreCalculator) {
         this.entityManager = entityManager;
         this.userJpaRepository = userJpaRepository;
         this.internshipJpaRepository = internshipJpaRepository;
         this.mapper = mapper;
+        this.preferenceScoreCalculator = preferenceScoreCalculator;
     }
-    public ArrayList<InternshipDTO> getEligibleInternships(int userId) {
+    public ArrayList<InternshipDTO> getEligibleInternships(int userId, UserRequirements userRequirements) {
         try {
             User user = userJpaRepository.findById(userId).get();
             int userAge = user.getAge();
@@ -57,6 +60,7 @@ public class EligibilityFilteringThroughNativeQuery {
             nativeQuery.setParameter("userId", userId);
             nativeQuery.setParameter("threshold", threshold);
             ArrayList<Integer> internshipIdsList = new ArrayList<Integer>(nativeQuery.getResultList());
+            HashMap<Integer, Double> preferenceScores = preferenceScoreCalculator.getPreferenceScores(internshipIdsList, userRequirements);
             ArrayList<InternshipDTO> internshipDTOs = new ArrayList<>();
             for (int internshipId : internshipIdsList) {
                 Internship internship = internshipJpaRepository.findById(internshipId).get();
@@ -65,7 +69,7 @@ public class EligibilityFilteringThroughNativeQuery {
             }
             return internshipDTOs;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Noqvjkagj");
         }
     }
 }
