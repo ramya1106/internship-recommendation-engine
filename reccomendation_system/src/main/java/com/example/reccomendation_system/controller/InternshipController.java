@@ -3,6 +3,7 @@ package com.example.reccomendation_system.controller;
 
 import com.example.reccomendation_system.dto.InternshipDTO;
 import com.example.reccomendation_system.helper.EligibilityValidator;
+import com.example.reccomendation_system.repository.InternshipJpaRepository;
 import com.example.reccomendation_system.service.InternshipService;
 import com.example.reccomendation_system.service.MlModelService;
 import com.example.reccomendation_system.util.EligibilityFilteringThroughNativeQuery;
@@ -19,14 +20,21 @@ public class InternshipController {
     private final InternshipService internshipService;
     private final MlModelService mlModelService;
 
+    private final InternshipJpaRepository internshipJpaRepository;
+
     // TODO :TESTING
     private final EligibilityValidator eligibilityValidator;
     private final EligibilityFilteringThroughNativeQuery eligibilityFilteringThroughNativeQuery;
 
     @Autowired
-    public InternshipController(InternshipService internshipService, MlModelService mlModelService, EligibilityValidator eligibilityValidator, EligibilityFilteringThroughNativeQuery eligibilityFilteringThroughNativeQuery) {
+    public InternshipController(InternshipService internshipService, MlModelService mlModelService, InternshipJpaRepository internshipJpaRepository, EligibilityValidator eligibilityValidator, EligibilityFilteringThroughNativeQuery eligibilityFilteringThroughNativeQuery) {
         this.internshipService = internshipService;
         this.mlModelService = mlModelService;
+
+
+        this.internshipJpaRepository = internshipJpaRepository;
+
+
         this.eligibilityValidator = eligibilityValidator;
         this.eligibilityFilteringThroughNativeQuery = eligibilityFilteringThroughNativeQuery;
     }
@@ -44,9 +52,6 @@ public class InternshipController {
     @PostMapping("/eligible/{userId}")
     public ArrayList<InternshipDTO> getAllEligibleInternships(@PathVariable("userId") int userId, @RequestBody UserRequirements userRequirements) {
         // return eligibilityValidator.getAllEligibleInternships(userId);
-        // TODO : USE NATIVE QUERY
         return eligibilityFilteringThroughNativeQuery.getEligibleInternships(userId, userRequirements);
     }
-
-
 }

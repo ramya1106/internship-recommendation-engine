@@ -52,9 +52,11 @@ public class Internship {
     private String description;
 
     @Column(name = "applied_count")
+    @ColumnDefault("0")
     private int appliedCount;
 
     @Column(name = "total_count")
+    @ColumnDefault("0")
     private int totalCount;
 
     @Column(name = "internship_state")

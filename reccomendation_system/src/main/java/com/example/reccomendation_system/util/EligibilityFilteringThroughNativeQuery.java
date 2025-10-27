@@ -60,7 +60,9 @@ public class EligibilityFilteringThroughNativeQuery {
             nativeQuery.setParameter("userId", userId);
             nativeQuery.setParameter("threshold", threshold);
             ArrayList<Integer> internshipIdsList = new ArrayList<Integer>(nativeQuery.getResultList());
+            // ------TESTING-----
             HashMap<Integer, Double> preferenceScores = preferenceScoreCalculator.getPreferenceScores(internshipIdsList, userRequirements);
+            // ------TESTING-----
             ArrayList<InternshipDTO> internshipDTOs = new ArrayList<>();
             for (int internshipId : internshipIdsList) {
                 Internship internship = internshipJpaRepository.findById(internshipId).get();
@@ -69,7 +71,7 @@ public class EligibilityFilteringThroughNativeQuery {
             }
             return internshipDTOs;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Noqvjkagj");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }
