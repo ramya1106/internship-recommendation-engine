@@ -1,6 +1,5 @@
 package com.example.reccomendation_system.controller;
 
-
 import com.example.reccomendation_system.dto.InternshipDTO;
 import com.example.reccomendation_system.helper.EligibilityValidator;
 import com.example.reccomendation_system.repository.InternshipJpaRepository;
@@ -20,8 +19,6 @@ public class InternshipController {
     private final InternshipService internshipService;
     private final MlModelService mlModelService;
 
-    private final InternshipJpaRepository internshipJpaRepository;
-
     // TODO :TESTING
     private final EligibilityValidator eligibilityValidator;
     private final EligibilityFilteringThroughNativeQuery eligibilityFilteringThroughNativeQuery;
@@ -30,11 +27,6 @@ public class InternshipController {
     public InternshipController(InternshipService internshipService, MlModelService mlModelService, InternshipJpaRepository internshipJpaRepository, EligibilityValidator eligibilityValidator, EligibilityFilteringThroughNativeQuery eligibilityFilteringThroughNativeQuery) {
         this.internshipService = internshipService;
         this.mlModelService = mlModelService;
-
-
-        this.internshipJpaRepository = internshipJpaRepository;
-
-
         this.eligibilityValidator = eligibilityValidator;
         this.eligibilityFilteringThroughNativeQuery = eligibilityFilteringThroughNativeQuery;
     }
@@ -50,8 +42,14 @@ public class InternshipController {
     }
 
     @PostMapping("/eligible/{userId}")
-    public ArrayList<InternshipDTO> getAllEligibleInternships(@PathVariable("userId") int userId, @RequestBody UserRequirements userRequirements) {
+    public ArrayList<InternshipDTO> getAllEligibleInternships(@PathVariable("userId") int userId) {
         // return eligibilityValidator.getAllEligibleInternships(userId);
-        return eligibilityFilteringThroughNativeQuery.getEligibleInternships(userId, userRequirements);
+        return eligibilityFilteringThroughNativeQuery.getEligibleInternships(userId);
+    }
+
+    @PostMapping("/ranked/{userId}")
+    public ArrayList<InternshipDTO> getPreferenceScoreRankedInternships(@PathVariable("userId") int userId, @RequestBody UserRequirements userRequirements) {
+        // return the internships in order of their preference score match
+        return internshipService.getPreferenceScoreRankedInternships(userId, userRequirements);
     }
 }

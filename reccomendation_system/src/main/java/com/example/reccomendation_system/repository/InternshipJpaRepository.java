@@ -5,11 +5,41 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
-
 @Repository
 public interface InternshipJpaRepository extends JpaRepository<Internship, Integer> {
+
+    @Query("""
+            SELECT
+            MAX(
+                CASE i.totalCount
+                    WHEN 0 THEN NULL
+                    ELSE (i.appliedCount * 1.0 / i.totalCount)
+                    END
+                ),
+            MIN(
+                CASE i.totalCount
+                    WHEN 0 THEN NULL
+                    ELSE (i.appliedCount * 1.0 / i.totalCount)
+                    END
+                ),
+            MAX(i.appliedCount),
+            MIN(i.appliedCount)
+            FROM Internship i
+            WHERE i.id IN :ids""")
+    List<Object[]> findMaxMinRatiosAndAppliedCounts(@Param("ids") List<Integer> eligibleInternshipIds);
+
+    @Query("""
+            SELECT
+            CASE i.totalCount
+                WHEN 0 THEN NULL
+                ELSE (i.appliedCount * 1.0 / i.totalCount)
+            END,
+            i.appliedCount
+            FROM Internship i
+            WHERE i.id = :id""")
+    List<Object[]> findAppliedRatioAndAppliedCountById(@Param("id") int internshipId);
+
     @Query("""
             SELECT MAX(i.appliedCount * 1.0 / i.totalCount),
             MIN(i.appliedCount * 1.0 / i.totalCount)
@@ -17,20 +47,20 @@ public interface InternshipJpaRepository extends JpaRepository<Internship, Integ
             WHERE i.totalCount != 0
             AND i.id IN :ids
             """)
-    public List<Object[]> findMaxMinRatios(@Param("ids") List<Integer> eligibleInternshipIds);
+    List<Object[]> findMaxMinRatios(@Param("ids") List<Integer> eligibleInternshipIds);
 
     @Query("""
             SELECT MAX(i.appliedCount), MIN(i.appliedCount) FROM
             Internship i
             WHERE i.id IN :ids""")
-    public List<Object[]> findMaxMinAppliedCounts(@Param("ids") List<Integer> eligibleInternshipIds);
+    List<Object[]> findMaxMinAppliedCounts(@Param("ids") List<Integer> eligibleInternshipIds);
 
     @Query("SELECT i.totalCount FROM Internship i WHERE i.id = :id")
-    public Integer findTotalCountById(@Param("id") int internshipId);
+    Integer findTotalCountById(@Param("id") int internshipId);
 
     @Query("SELECT i.appliedCount FROM Internship i WHERE i.id = :id")
-    public Integer findAppliedCountById(@Param("id") int internshipId);
+    Integer findAppliedCountById(@Param("id") int internshipId);
 
     @Query("SELECT i.appliedCount * 1.0 / i.totalCount FROM Internship i WHERE i.id = :id")
-    public Double findAppliedRatioById(@Param("id") int internshipId);
+    Double findAppliedRatioById(@Param("id") int internshipId);
 }

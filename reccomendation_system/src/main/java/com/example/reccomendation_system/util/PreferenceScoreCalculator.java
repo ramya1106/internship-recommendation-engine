@@ -44,30 +44,29 @@ public class PreferenceScoreCalculator {
     }
     // TODO : OPTIMIZE QUERY (get all values in the same query)
     private void getAppliedRatioScores(List<Integer> internshipIds, Map<Integer, Double> preferenceScores) {
-        if (internshipIds == null || internshipIds.isEmpty()) return;
-
-        Object[] maxMinRatios = internshipJpaRepository.findMaxMinRatios(internshipIds).get(0);
-        Object[] maxMinAppliedCounts = internshipJpaRepository.findMaxMinAppliedCounts(internshipIds).get(0);
-        if (maxMinRatios[0] == null || maxMinRatios[1] == null
-                || maxMinAppliedCounts[0] == null || maxMinAppliedCounts[1] == null) {
+        if (internshipIds == null || internshipIds.isEmpty()){
             return;
         }
-        double maxAppliedRatio = ((Number) maxMinRatios[0]).doubleValue();
-        double minAppliedRatio = ((Number) maxMinRatios[1]).doubleValue();
-        int maxAppliedCount = ((Number) maxMinAppliedCounts[0]).intValue();
-        int minAppliedCount = ((Number) maxMinAppliedCounts[1]).intValue();
+        Object[] maxMinRatiosAndAppliedCounts = internshipJpaRepository.findMaxMinRatiosAndAppliedCounts(internshipIds).get(0);
+        double maxAppliedRatio = ((Number) maxMinRatiosAndAppliedCounts[0]).doubleValue();
+        double minAppliedRatio = ((Number) maxMinRatiosAndAppliedCounts[1]).doubleValue();
+        int maxAppliedCount = ((Number) maxMinRatiosAndAppliedCounts[2]).intValue();
+        int minAppliedCount = ((Number) maxMinRatiosAndAppliedCounts[3]).intValue();
+        if (maxAppliedRatio == minAppliedRatio && maxAppliedCount == minAppliedCount) {
+            return;
+        }
         for (int internshipId : internshipIds) {
-             Integer totalCount = internshipJpaRepository.findTotalCountById(internshipId);
-            if (totalCount == null) continue;
-            double score;
-            if (totalCount == 0) {
-                Integer appliedCount = internshipJpaRepository.findAppliedCountById(internshipId);
-                if (appliedCount == null) continue;
-                score = ((double) maxAppliedCount - appliedCount) / (maxAppliedCount - minAppliedCount);
-            } else {
-                Double appliedRatio = internshipJpaRepository.findAppliedRatioById(internshipId);
-                if (appliedRatio == null) continue;
-                score = (maxAppliedRatio - appliedRatio) / (maxAppliedRatio - minAppliedRatio);
+            double score = 0.0;
+            Object[] currAppliedRatioAndAppliedCount = internshipJpaRepository.findAppliedRatioAndAppliedCountById(internshipId).get(0);
+            if (currAppliedRatioAndAppliedCount[0] == null) {
+                if (maxAppliedCount != minAppliedCount) {
+                    int currAppliedCount = ((Number) currAppliedRatioAndAppliedCount[1]).intValue();
+                    score = ((double) maxAppliedCount - currAppliedCount) / (maxAppliedCount - minAppliedCount);
+                }
+            }
+            else if (maxAppliedRatio != minAppliedRatio) {
+                double currAppliedRatio = ((Number) currAppliedRatioAndAppliedCount[0]).doubleValue();
+                score = (maxAppliedRatio - currAppliedRatio) / (maxAppliedRatio - minAppliedRatio);
             }
             preferenceScores.put(internshipId, score + preferenceScores.getOrDefault(internshipId, 0.0));
         }

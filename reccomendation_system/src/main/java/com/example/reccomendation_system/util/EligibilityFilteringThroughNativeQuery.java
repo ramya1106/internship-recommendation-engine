@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Service
 public class EligibilityFilteringThroughNativeQuery {
@@ -33,7 +32,18 @@ public class EligibilityFilteringThroughNativeQuery {
         this.mapper = mapper;
         this.preferenceScoreCalculator = preferenceScoreCalculator;
     }
-    public ArrayList<InternshipDTO> getEligibleInternships(int userId, UserRequirements userRequirements) {
+    public ArrayList<InternshipDTO> getEligibleInternships(int userId) {
+        ArrayList<Integer> internshipIdsList = getEligibleInternshipIds(userId);
+        ArrayList<InternshipDTO> internshipDTOs = new ArrayList<>();
+        for (int internshipId : internshipIdsList) {
+            Internship internship = internshipJpaRepository.findById(internshipId).get();
+            InternshipDTO internshipDTO = mapper.toInternshipDTO(internship);
+            internshipDTOs.add(internshipDTO);
+        }
+        return internshipDTOs;
+    }
+
+    public ArrayList<Integer> getEligibleInternshipIds(int userId) {
         try {
             User user = userJpaRepository.findById(userId).get();
             int userAge = user.getAge();
@@ -59,17 +69,7 @@ public class EligibilityFilteringThroughNativeQuery {
             nativeQuery.setParameter("highestQualificationRank", highestQualificationRank);
             nativeQuery.setParameter("userId", userId);
             nativeQuery.setParameter("threshold", threshold);
-            ArrayList<Integer> internshipIdsList = new ArrayList<Integer>(nativeQuery.getResultList());
-            // ------TESTING-----
-            HashMap<Integer, Double> preferenceScores = preferenceScoreCalculator.getPreferenceScores(internshipIdsList, userRequirements);
-            // ------TESTING-----
-            ArrayList<InternshipDTO> internshipDTOs = new ArrayList<>();
-            for (int internshipId : internshipIdsList) {
-                Internship internship = internshipJpaRepository.findById(internshipId).get();
-                InternshipDTO internshipDTO = mapper.toInternshipDTO(internship);
-                internshipDTOs.add(internshipDTO);
-            }
-            return internshipDTOs;
+            return new ArrayList<Integer>(nativeQuery.getResultList());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
