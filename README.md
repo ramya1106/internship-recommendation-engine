@@ -15,25 +15,30 @@ The system collects user preferences, applies machine learning models (Logistic 
 -  **Eligibility Filtering** – Filters internships based on qualification, age, and gender.
 -  **Advanced Eligibility Filtering** – Skill-based compatibility checks between user skills and internship requirements.
 -  **Database Integration** – Efficient storage and retrieval of user, internship, and recommendation data.  
-
+-  **Preference-Based Scoring** - Based on applied count, mode preference.
 ---
 
 ###  Upcoming Features
 -  **Voice Assistance** – Collect preferences through voice input and provide voice-over for internship descriptions.  
 -  **Multilingual Support** – Text and voice assistance in multiple languages for better accessibility.  
 -  **Feedback-Based Recommendations** – Refined internship suggestions based on user feedback and past choices.  
--  **Preference-Based Scoring** – Additional scoring mechanism to rank internships based on user-specific preference scores.  
+-  **Additional Preference-Based Scoring** – Based on posting time, location, and employment type. 
 -  **Score Normalization & Hybrid Ranking** – Normalize and combine multiple factors (preference score, ML regression score, feedback score) for improved ranking accuracy.  
 
 ---
 
 ### Setting up the Project  
 
-&nbsp;1.  Clone the repository & navigate to the internship-recommendation-engine folder
+&nbsp;1.  Clone the repository
 
 ```bash
 git clone https://github.com/ramya1106/internship-recommendation-engine
+
+```
+&nbsp;2. Navigate to the internship-recommendation-engine folder
+```bash
 cd internship-recommendation-engine
+
 ```
 ---
 
@@ -57,7 +62,7 @@ npm -v
 ```
 
 ### Setup Instructions
-&nbsp;1. Move to frontend folder
+&nbsp;1. Move to the frontend folder
 
 ```bash
 cd frontend
@@ -69,7 +74,7 @@ cd frontend
 npm install
 ```
 
-    (This will pull everything listed in `package.json` including react, react-router-dom, react-icons, etc.)  
+    (This will pull everything listed in `package.json`, including react, react-router-dom, react-icons, etc.)  
 
 &nbsp;3.  Run the development server 
 
@@ -97,7 +102,13 @@ npm run build
 - Make sure the backend services are running before using the full flow.
 
 ---
+## Database Creation 
+&nbsp;1. Create a new MySQL database:  
 
+```sql
+CREATE DATABASE <your_db_name>;
+```
+---
 ## Backend (Spring Boot)  
 
 ### Prerequisites  
@@ -108,24 +119,15 @@ Before running the project, make sure you have:
 - IntelliJ IDEA (with **Lombok** plugin installed)
 
   **Notes**
-  - Don't install Maven Daemon, install Maven
-  
-
+  - Don't install *Maven Daemon*, install *Maven*
 ---
-
-### Database Setup  
-&nbsp;1. Create a new MySQL database:  
-
-```sql
-CREATE DATABASE <your_db_name>;
-```
-
-&nbsp;2. Navigate to:
+### Setup Instructions
+&nbsp;1. Navigate to:
 
     internship-recommendation-engine/recommendation_system/com/example/src/main/resources
 
 
-&nbsp;3. Create a new file named `application-local.properties` and copy contents from `application.properties`.
+&nbsp;2. Create a new file named `application-local.properties` and copy the contents from `application.properties`.
 
 Update it like this:
 
@@ -153,21 +155,17 @@ Update it like this:
 - On the first run, tables will be created automatically.
 - If initializing data: uncomment spring.sql.init.mode=always for the second run only, then comment it again.
 
----
-
-### Setup Instructions
-
-&nbsp;1. Move to reccomendation_system folder
+&nbsp;3. Move to reccomendation_system folder
 
     cd reccomendation_system
 
 
-&nbsp;2. Build with Maven
+&nbsp;4. Build with Maven
 
     mvn clean install
 
 
-&nbsp;3. Run the application
+&nbsp;5. Run the application
 
     mvn spring-boot:run "-Dspring-boot.run.profiles=local"
 
@@ -181,6 +179,7 @@ Update it like this:
 | POST   | `/internships/filtered/{userId}` | Get internships for a user (via ML model) |
 | GET    | `/internship/details/{internshipId}` | Internship details |
 | GET    | `/internships/eligible/{userId}` | Get internships the user is eligible for |
+| GET    | `/internships/ranked/{userId}` | Get eligible internships ranked by preference scores |
 
 
 The app will be available at: http://localhost:8080
