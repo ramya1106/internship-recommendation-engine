@@ -4,6 +4,7 @@ import com.example.reccomendation_system.dto.InternshipDTO;
 import com.example.reccomendation_system.model.InternshipRequirements;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,5 +31,12 @@ public interface InternshipRequirementsJpaRepository extends JpaRepository<Inter
             WHERE i.id = :internshipId
             """)
     String findModeByInternshipId(int internshipId);
+
+    @Query("""
+            SELECT ir.internship.id, ir.mode
+            FROM InternshipRequirements ir
+            WHERE ir.internship.id IN :ids
+            """)
+    List<Object[]> findAllModesById(@Param("ids") List<Integer> eligibleInternshipIds);
 
 }

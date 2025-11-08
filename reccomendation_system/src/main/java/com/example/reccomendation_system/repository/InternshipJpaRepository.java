@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 @Repository
 public interface InternshipJpaRepository extends JpaRepository<Internship, Integer> {
@@ -55,12 +56,14 @@ public interface InternshipJpaRepository extends JpaRepository<Internship, Integ
             WHERE i.id IN :ids""")
     List<Object[]> findMaxMinAppliedCounts(@Param("ids") List<Integer> eligibleInternshipIds);
 
-    @Query("SELECT i.totalCount FROM Internship i WHERE i.id = :id")
-    Integer findTotalCountById(@Param("id") int internshipId);
-
-    @Query("SELECT i.appliedCount FROM Internship i WHERE i.id = :id")
-    Integer findAppliedCountById(@Param("id") int internshipId);
-
-    @Query("SELECT i.appliedCount * 1.0 / i.totalCount FROM Internship i WHERE i.id = :id")
-    Double findAppliedRatioById(@Param("id") int internshipId);
+    @Query("""
+            SELECT i.id, i.appliedCount,
+            CASE i.totalCount
+                WHEN 0 THEN NULL
+                ELSE i.appliedCount * 1.0 / i.totalCount
+            END
+            FROM Internship i
+            WHERE i.id IN :ids
+            """)
+    List<Object[]> findAllAppliedCountsAndAppliedRatiosById(@Param("ids") List<Integer> eligibleInternshipIds);
 }
