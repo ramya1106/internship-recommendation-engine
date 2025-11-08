@@ -5,6 +5,7 @@ import com.example.reccomendation_system.mapper.Mapper;
 import com.example.reccomendation_system.model.Internship;
 import com.example.reccomendation_system.model.User;
 import com.example.reccomendation_system.repository.InternshipJpaRepository;
+import com.example.reccomendation_system.repository.InternshipRequirementsJpaRepository;
 import com.example.reccomendation_system.repository.UserJpaRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -14,23 +15,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
-public class EligibilityFilteringThroughNativeQuery {
+public class EligibilityFiltering {
 
     private final EntityManager entityManager;
     private final UserJpaRepository userJpaRepository;
     private final InternshipJpaRepository internshipJpaRepository;
+    private final InternshipRequirementsJpaRepository internshipRequirementsJpaRepository;
     private final Mapper mapper;
-    private final PreferenceScoreCalculator preferenceScoreCalculator;
+    final int minimumCount = 3;
 
     @Autowired
-    public EligibilityFilteringThroughNativeQuery(EntityManager entityManager, UserJpaRepository userJpaRepository, InternshipJpaRepository internshipJpaRepository, Mapper mapper, PreferenceScoreCalculator preferenceScoreCalculator) {
+    public EligibilityFiltering(EntityManager entityManager, UserJpaRepository userJpaRepository, InternshipJpaRepository internshipJpaRepository, InternshipRequirementsJpaRepository internshipRequirementsJpaRepository, Mapper mapper) {
         this.entityManager = entityManager;
         this.userJpaRepository = userJpaRepository;
         this.internshipJpaRepository = internshipJpaRepository;
+        this.internshipRequirementsJpaRepository = internshipRequirementsJpaRepository;
         this.mapper = mapper;
-        this.preferenceScoreCalculator = preferenceScoreCalculator;
     }
     public ArrayList<InternshipDTO> getEligibleInternships(int userId) {
         ArrayList<Integer> internshipIdsList = getEligibleInternshipIds(userId);
@@ -69,7 +72,12 @@ public class EligibilityFilteringThroughNativeQuery {
             nativeQuery.setParameter("highestQualificationRank", highestQualificationRank);
             nativeQuery.setParameter("userId", userId);
             nativeQuery.setParameter("threshold", threshold);
-            return new ArrayList<Integer>(nativeQuery.getResultList());
+            List<Integer> eligibleInternshipIds = nativeQuery.getResultList();
+            if (eligibleInternshipIds.size() < minimumCount) {
+                System.out.println("Not enough");
+                return new ArrayList<Integer>(internshipRequirementsJpaRepository.findAllEligibleInternshipIds(userAge, userGender, highestQualificationRank));
+            }
+            return new ArrayList<>(eligibleInternshipIds);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
