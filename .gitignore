@@ -56,7 +56,9 @@ reccomendation_system/build/
 ### VS Code ###
 reccomendation_system/.vscode/
 reccomendation_system/**/application-local.properties 
+reccomendation_system/**/QualificationDataMigration.java 
 
+reccomendation_system/src/main/java/com/example/reccomendation_system/helper/CSVFileReader.java
 
 
 # Byte-compiled / optimized / DLL files
