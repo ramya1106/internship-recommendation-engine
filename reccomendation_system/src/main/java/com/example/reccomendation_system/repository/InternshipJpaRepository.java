@@ -68,7 +68,7 @@ public interface InternshipJpaRepository extends JpaRepository<Internship, Integ
     List<Object[]> findAllAppliedCountsAndAppliedRatiosById(@Param("ids") List<Integer> eligibleInternshipIds);
 
     @Query("""
-            SELECT i.id, i.state, i.distict
+            SELECT i.id, i.state, i.district
             FROM Internship i
             WHERE i.id IN :ids""")
     List<Object[]> findAllStatesAndDistrictsById(@Param("ids") List<Integer> eligibleInternshipIds);
