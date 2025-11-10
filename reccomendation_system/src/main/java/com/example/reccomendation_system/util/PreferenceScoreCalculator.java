@@ -17,6 +17,8 @@ public class PreferenceScoreCalculator {
 
     private final InternshipRequirementsJpaRepository internshipRequirementsJpaRepository;
     private final InternshipJpaRepository internshipJpaRepository;
+    private List<Integer> eligibleInternshipIds;
+    private HashMap<Integer, Double> preferenceScores;
 
     @Autowired
     public PreferenceScoreCalculator(InternshipRequirementsJpaRepository internshipRequirementsJpaRepository, InternshipJpaRepository internshipJpaRepository) {
@@ -24,14 +26,15 @@ public class PreferenceScoreCalculator {
         this.internshipJpaRepository = internshipJpaRepository;
     }
     public HashMap<Integer, Double> getPreferenceScores(ArrayList<Integer> internshipIds, UserRequirements userRequirements) {
-        HashMap<Integer, Double> preferenceScores = new HashMap<>();
         // calculate preference score for mode
-        getModePreferenceScores(preferenceScores, internshipIds, userRequirements.getPreferredMode());
+        getModePreferenceScores(userRequirements.getPreferredMode());
         // calculate preference scores for applied ratios (applied_count / total_count)
-        getAppliedRatioScores(internshipIds, preferenceScores);
+        getAppliedRatioScores();
+        // calculate preference scores based on location
+        getLocationPreferenceScores(userRequirements.getPreferredLocation());
         return preferenceScores;
     }
-    private void getModePreferenceScores(HashMap<Integer, Double> preferenceScores, ArrayList<Integer> eligibleInternshipIds, String preferredMode) {
+    private void getModePreferenceScores(String preferredMode) {
         List<Object[]> modes = internshipRequirementsJpaRepository.findAllModesById(eligibleInternshipIds);
         HashMap<Integer, String> modesMap = new HashMap<>();
         for (Object[] record : modes) {
@@ -51,11 +54,11 @@ public class PreferenceScoreCalculator {
             preferenceScores.put(internshipId, score + preferenceScores.getOrDefault(internshipId, 0.0));
         }
     }
-    private void getAppliedRatioScores(List<Integer> internshipIds, Map<Integer, Double> preferenceScores) {
-        if (internshipIds == null || internshipIds.isEmpty()){
+    private void getAppliedRatioScores() {
+        if (eligibleInternshipIds == null || eligibleInternshipIds.isEmpty()){
             return;
         }
-        List<Object[]> results = internshipJpaRepository.findMaxMinRatiosAndAppliedCounts(internshipIds);
+        List<Object[]> results = internshipJpaRepository.findMaxMinRatiosAndAppliedCounts(eligibleInternshipIds);
         if (results == null || results.isEmpty()) {
             return;
         }
@@ -67,7 +70,7 @@ public class PreferenceScoreCalculator {
         if (maxAppliedRatio == minAppliedRatio && maxAppliedCount == minAppliedCount) {
             return;
         }
-        List<Object[]> appliedCountAndAppliedRatios = internshipJpaRepository.findAllAppliedCountsAndAppliedRatiosById(internshipIds);
+        List<Object[]> appliedCountAndAppliedRatios = internshipJpaRepository.findAllAppliedCountsAndAppliedRatiosById(eligibleInternshipIds);
         HashMap<Integer, Double> appliedRatiosMap = new HashMap<>();
         HashMap<Integer, Integer> appliedCountsMap = new HashMap<>();
 
@@ -78,7 +81,7 @@ public class PreferenceScoreCalculator {
                 appliedRatiosMap.put(internshipId, ((Number) record[2]).doubleValue());
             }
         }
-        for (int internshipId : internshipIds) {
+        for (int internshipId : eligibleInternshipIds) {
             double score = 0.0;
             if (!appliedRatiosMap.containsKey(internshipId)) {
                 if (maxAppliedCount != minAppliedCount) {
@@ -92,5 +95,26 @@ public class PreferenceScoreCalculator {
             }
             preferenceScores.put(internshipId, score + preferenceScores.getOrDefault(internshipId, 0.0));
         }
+    }
+
+    private void getLocationPreferenceScores(String preferredLocation) {
+        List<Object[]> locations = internshipJpaRepository.findAllStatesAndDistrictsById(eligibleInternshipIds);
+        HashMap<Integer, String> districtsMap = new HashMap<>();
+        HashMap<Integer, String> statesMap = new HashMap<>();
+
+        for (Object[] location : locations) {
+            int internshipId = ((Number) location[0]).intValue();
+            if (location[1] != null) {
+                statesMap.put(internshipId, location[1].toString());
+            }
+            if (location[2] != null) {
+                districtsMap.put(internshipId, location[2].toString());
+            }
+        }
+
+        HashMap<String, Double> locationDistanceMap = new HashMap<>();
+        // TODO : distance calculation
+        // calculate distance between each internship location and user preferred location
+        // score_formula = (maxDistance - currDistance) / (maxDistance - minDistance)
     }
 }

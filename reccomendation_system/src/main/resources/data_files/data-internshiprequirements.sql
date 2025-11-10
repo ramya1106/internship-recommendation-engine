@@ -1,4 +1,4 @@
-INSERT INTO internship_requirements(id, age, description, gender, max_experience, min_experience, mode, percentage, specialization, stream, internship_id, minimum_qualification_rank) VALUES
+INSERT INTO internshiprequirements(id, age, description, gender, max_experience, min_experience, mode, percentage, specialization, stream, internship_id, minimum_qualification_rank) VALUES
 (1,18,'Basic understanding of C and microcontrollers; willing to work in lab.','Any',2,0,'Onsite',65,'Embedded Systems','Electronics',1,3),
 (2,20,'Proficient in HTML, CSS, JS; knowledge of React preferred.','Any',3,0,'Onsite',70,'Frontend Development','Computer Science',2,3),
 (3,19,'Familiarity with production lines and QC basics preferred.','Any',4,0,'Onsite',60,'Quality Assurance','Mechanical',3,2),

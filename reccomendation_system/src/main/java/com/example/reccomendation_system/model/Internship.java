@@ -25,25 +25,22 @@ public class Internship {
     private String title; // NOT NULL
 
     @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "companyid", nullable = false)
     private Company company;// FK , NOT NULL
 
-    @Column(name = "min_stipend")
+    @Column(name = "minstipend")
     @ColumnDefault("0")
     private double minStipend;
 
-    @Column(name = "max_stipend")
+    @Column(name = "maxstipend")
     @ColumnDefault("0")
     private double maxStipend;
 
     @Column(name = "duration")
     private String duration; // 1 month
 
-    @Column(name = "posting_time", nullable = false)
+    @Column(name = "postingtime", nullable = false)
     private Date postingTime; // not null
-
-    @Column(name = "location")
-    private String location;
 
     @Column(name = "sector")
     private String sector;
@@ -51,27 +48,21 @@ public class Internship {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "applied_count")
+    @Column(name = "appliedcount")
     @ColumnDefault("0")
     private int appliedCount;
 
-    @Column(name = "total_count")
+    @Column(name = "totalcount")
     @ColumnDefault("0")
     private int totalCount;
-
-    @Column(name = "internship_state")
-    private String internshipState;
-
-    @Column(name = "internship_district")
-    private String internshipDistrict;
 
     @Column(name = "benefits")
     private String benefits;
 
-    @Column(name = "address_line1")
+    @Column(name = "addressline1")
     private String addressLine1;
 
-    @Column(name = "address_line2")
+    @Column(name = "addressline2")
     private String addressLine2;
 
     @Column(name = "state")
@@ -89,6 +80,6 @@ public class Internship {
     @Column(name = "field")
     private String field;
 
-    @Column(name = "postal_code")
+    @Column(name = "postalcode")
     private String postalCode;
 }

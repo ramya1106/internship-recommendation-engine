@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "internship_requirements")
+@Table(name = "internshiprequirements")
 public class InternshipRequirements {
 
     @Id
@@ -37,10 +37,6 @@ public class InternshipRequirements {
 
     @Column(name = "gender")
     private String gender;
-
-    // TODO : DELETE AFTER DATA POPULATION
-//    @Column(name = "minimum_qualification")
-//    private String minimumQualification;
 
     @Column(name = "minimum_qualification_rank")
     @ColumnDefault("0")
