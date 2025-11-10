@@ -178,8 +178,8 @@ Update it like this:
 | GET    | `/users/{userId}` | Fetch user details |
 | POST   | `/internships/filtered/{userId}` | Get internships for a user (via ML model) |
 | GET    | `/internship/details/{internshipId}` | Internship details |
-| GET    | `/internships/eligible/{userId}` | Get internships the user is eligible for |
-| GET    | `/internships/ranked/{userId}` | Get eligible internships ranked by preference scores |
+| POST    | `/internships/eligible/{userId}` | Get internships the user is eligible for |
+| POST    | `/internships/ranked/{userId}` | Get eligible internships ranked by preference scores |
 
 
 The app will be available at: http://localhost:8080
