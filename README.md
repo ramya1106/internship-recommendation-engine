@@ -27,7 +27,7 @@ The system collects user preferences, applies machine learning models (Logistic 
 
 ---
 
-### Setting up the Project  
+## Setting up the Project  
 
 &nbsp;1.  Clone the repository
 
