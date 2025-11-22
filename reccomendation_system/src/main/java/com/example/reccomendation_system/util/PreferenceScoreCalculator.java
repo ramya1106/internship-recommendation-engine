@@ -1,6 +1,7 @@
 package com.example.reccomendation_system.util;
 
 import com.example.reccomendation_system.dto.LocationDTO;
+import com.example.reccomendation_system.dto.UserRequirements;
 import com.example.reccomendation_system.helper.EucledianDistanceCalculator;
 import com.example.reccomendation_system.dto.LocationCoordinates;
 import com.example.reccomendation_system.repository.CityCoordinatesJpaRepository;

@@ -1,4 +1,4 @@
-package com.example.reccomendation_system.util;
+package com.example.reccomendation_system.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,6 +12,7 @@ public class UserRequirements {
 
     private String role;
     private String sector;
+    @JsonProperty("min_stipend")
     private double minStipend;
     @JsonProperty("preferred_mode")
     private String preferredMode;
@@ -19,6 +20,7 @@ public class UserRequirements {
     private String preferredCity;
     @JsonProperty("preferred_state")
     private String preferredState;
+    @JsonProperty("employment_type")
     private String employmentType;
 
 }

@@ -1,7 +1,7 @@
 package com.example.reccomendation_system.repository;
 
 import com.example.reccomendation_system.dto.InternshipDTO;
-import com.example.reccomendation_system.util.UserRequirements;
+import com.example.reccomendation_system.dto.UserRequirements;
 
 import java.util.ArrayList;
 

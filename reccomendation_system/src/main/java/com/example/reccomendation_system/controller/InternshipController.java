@@ -5,7 +5,7 @@ import com.example.reccomendation_system.repository.InternshipJpaRepository;
 import com.example.reccomendation_system.service.InternshipService;
 import com.example.reccomendation_system.service.MlModelService;
 import com.example.reccomendation_system.util.EligibilityFiltering;
-import com.example.reccomendation_system.util.UserRequirements;
+import com.example.reccomendation_system.dto.UserRequirements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

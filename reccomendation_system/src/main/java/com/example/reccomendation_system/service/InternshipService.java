@@ -7,7 +7,7 @@ import com.example.reccomendation_system.repository.InternshipJpaRepository;
 import com.example.reccomendation_system.repository.InternshipRepository;
 import com.example.reccomendation_system.util.EligibilityFiltering;
 import com.example.reccomendation_system.util.PreferenceScoreCalculator;
-import com.example.reccomendation_system.util.UserRequirements;
+import com.example.reccomendation_system.dto.UserRequirements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
