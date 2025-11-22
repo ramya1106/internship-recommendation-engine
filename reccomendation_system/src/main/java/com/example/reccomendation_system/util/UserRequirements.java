@@ -15,7 +15,10 @@ public class UserRequirements {
     private double minStipend;
     @JsonProperty("preferred_mode")
     private String preferredMode;
-    private String preferredLocation;
+    @JsonProperty("preferred_city")
+    private String preferredCity;
+    @JsonProperty("preferred_state")
+    private String preferredState;
     private String employmentType;
 
 }

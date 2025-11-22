@@ -54,16 +54,16 @@ public class EligibilityFiltering {
             int highestQualificationRank = user.getHighestQualificationRank();
             double threshold = 0.3;
             String queryStatement = """
-                           SELECT i_r.internship_id
-                           FROM internship_requirements i_r
-                           JOIN internship_skill i_s ON i_r.internship_id = i_s.internship_id
+                           SELECT ir.internship_id
+                           FROM internshiprequirements ir
+                           JOIN internship_skill i_s ON ir.internship_id = i_s.internship_id
                            LEFT JOIN user_skill u_s ON i_s.skill_id = u_s.skill_id
                            WHERE
-                           i_r.age <= :age
-                           AND (i_r.gender = :gender OR i_r.gender = 'Any')
-                           AND (i_r.minimum_qualification_rank <= :highestQualificationRank)
+                           ir.age <= :age
+                           AND (ir.gender = :gender OR ir.gender = 'Any')
+                           AND (ir.minimum_qualification_rank <= :highestQualificationRank)
                            AND u_s.user_id = :userId
-                           GROUP BY i_r.internship_id
+                           GROUP BY ir.internship_id
                            HAVING COUNT(u_s.skill_id) * 1 / COUNT(i_s.skill_id) >= :threshold
                     """;
             Query nativeQuery = entityManager.createNativeQuery(queryStatement, Integer.class);
@@ -74,7 +74,7 @@ public class EligibilityFiltering {
             nativeQuery.setParameter("threshold", threshold);
             List<Integer> eligibleInternshipIds = nativeQuery.getResultList();
             if (eligibleInternshipIds.size() < minimumCount) {
-                System.out.println("Not enough");
+                // System.out.println("Not enough");
                 return new ArrayList<Integer>(internshipRequirementsJpaRepository.findAllEligibleInternshipIds(userAge, userGender, highestQualificationRank));
             }
             return new ArrayList<>(eligibleInternshipIds);

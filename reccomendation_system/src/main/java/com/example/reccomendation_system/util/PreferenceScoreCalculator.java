@@ -1,11 +1,19 @@
 package com.example.reccomendation_system.util;
 
+import com.example.reccomendation_system.dto.LocationDTO;
+import com.example.reccomendation_system.helper.EucledianDistanceCalculator;
+import com.example.reccomendation_system.dto.LocationCoordinates;
+import com.example.reccomendation_system.repository.CityCoordinatesJpaRepository;
 import com.example.reccomendation_system.repository.InternshipJpaRepository;
 import com.example.reccomendation_system.repository.InternshipRequirementsJpaRepository;
+import com.example.reccomendation_system.repository.StateCoordinatesJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Calculates internship preference scores based on mode match and popularity.
@@ -17,21 +25,33 @@ public class PreferenceScoreCalculator {
 
     private final InternshipRequirementsJpaRepository internshipRequirementsJpaRepository;
     private final InternshipJpaRepository internshipJpaRepository;
+    private final CityCoordinatesJpaRepository cityCoordinatesJpaRepository;
+    private final StateCoordinatesJpaRepository stateCoordinatesJpaRepository;
     private List<Integer> eligibleInternshipIds;
     private HashMap<Integer, Double> preferenceScores;
+    private EucledianDistanceCalculator eucledianDistanceCalculator;
 
     @Autowired
-    public PreferenceScoreCalculator(InternshipRequirementsJpaRepository internshipRequirementsJpaRepository, InternshipJpaRepository internshipJpaRepository) {
+    public PreferenceScoreCalculator(InternshipRequirementsJpaRepository internshipRequirementsJpaRepository, InternshipJpaRepository internshipJpaRepository, CityCoordinatesJpaRepository cityCoordinatesJpaRepository, StateCoordinatesJpaRepository stateCoordinatesJpaRepository) {
         this.internshipRequirementsJpaRepository = internshipRequirementsJpaRepository;
         this.internshipJpaRepository = internshipJpaRepository;
+        this.cityCoordinatesJpaRepository = cityCoordinatesJpaRepository;
+        this.stateCoordinatesJpaRepository = stateCoordinatesJpaRepository;
     }
     public HashMap<Integer, Double> getPreferenceScores(ArrayList<Integer> internshipIds, UserRequirements userRequirements) {
+        this.eligibleInternshipIds = internshipIds;
+        this.preferenceScores = new HashMap<>();
+        this.eucledianDistanceCalculator = new EucledianDistanceCalculator();
         // calculate preference score for mode
-        getModePreferenceScores(userRequirements.getPreferredMode());
+        if (userRequirements.getPreferredMode() != null) {
+            getModePreferenceScores(userRequirements.getPreferredMode());
+        }
         // calculate preference scores for applied ratios (applied_count / total_count)
         getAppliedRatioScores();
         // calculate preference scores based on location
-        getLocationPreferenceScores(userRequirements.getPreferredLocation());
+        if (userRequirements.getPreferredMode() != null || userRequirements.getPreferredState() != null) {
+            getLocationPreferenceScores(userRequirements.getPreferredCity(), userRequirements.getPreferredState());
+        }
         return preferenceScores;
     }
     private void getModePreferenceScores(String preferredMode) {
@@ -46,7 +66,7 @@ public class PreferenceScoreCalculator {
         for (int internshipId : eligibleInternshipIds) {
             double score = 0.0;
             String mode = modesMap.getOrDefault(internshipId, null);
-            if (preferredMode == null || preferredMode.equalsIgnoreCase("Any") || preferredMode.equalsIgnoreCase(mode)) {
+            if (preferredMode.equalsIgnoreCase("Any") || preferredMode.equalsIgnoreCase(mode)) {
                 score = 1;
             } else if ("Hybrid".equalsIgnoreCase(mode)) {
                 score = 0.5;
@@ -96,25 +116,58 @@ public class PreferenceScoreCalculator {
             preferenceScores.put(internshipId, score + preferenceScores.getOrDefault(internshipId, 0.0));
         }
     }
-
-    private void getLocationPreferenceScores(String preferredLocation) {
-        List<Object[]> locations = internshipJpaRepository.findAllStatesAndDistrictsById(eligibleInternshipIds);
-        HashMap<Integer, String> districtsMap = new HashMap<>();
-        HashMap<Integer, String> statesMap = new HashMap<>();
-
-        for (Object[] location : locations) {
-            int internshipId = ((Number) location[0]).intValue();
-            if (location[1] != null) {
-                statesMap.put(internshipId, location[1].toString());
-            }
-            if (location[2] != null) {
-                districtsMap.put(internshipId, location[2].toString());
+    private void getLocationPreferenceScores(String preferredCity, String preferredState) {
+        // get the preferred city and state coordinates
+        LocationCoordinates preferredLocationCoordinates = getCityLocationCoordinates(preferredCity);
+        if (preferredLocationCoordinates == null) {
+            preferredLocationCoordinates = getStateLocationCoordinates(preferredState);
+            if (preferredLocationCoordinates == null) {
+                throw new EntityNotFoundException("The given city and state are invalid!");
             }
         }
-
+        List<LocationDTO> internshipsCoordinates = internshipJpaRepository.findAllLocationCoordinatesById(eligibleInternshipIds);
+        HashMap<Integer, Double> internshipLocationDistanceMap = new HashMap<>();
         HashMap<String, Double> locationDistanceMap = new HashMap<>();
-        // TODO : distance calculation
-        // calculate distance between each internship location and user preferred location
-        // score_formula = (maxDistance - currDistance) / (maxDistance - minDistance)
+        double maxDistance = 0, minDistance = Double.POSITIVE_INFINITY;
+        for (LocationDTO locationDTO : internshipsCoordinates) {
+            double targetLatitude = locationDTO.getCityLatitude() == null ? locationDTO.getStateLatitude() : locationDTO.getCityLatitude();
+            double targetLongitude = locationDTO.getCityLongitude() == null ? locationDTO.getStateLongitude() : locationDTO.getCityLongitude();
+            String key = locationDTO.getCityName() != null ? locationDTO.getCityName() : locationDTO.getStateName();
+            if (locationDistanceMap.containsKey(key)) {
+                internshipLocationDistanceMap.put(locationDTO.getInternshipId(), locationDistanceMap.get(key));
+            } else {
+                double distance = eucledianDistanceCalculator.calculateDistance(preferredLocationCoordinates.getLatitude(), preferredLocationCoordinates.getLongitude(), targetLatitude, targetLongitude);
+                internshipLocationDistanceMap.put(locationDTO.getInternshipId(), distance);
+                if (locationDTO.getCityName() != null) {
+                    locationDistanceMap.put(locationDTO.getCityName(), distance);
+                } else if (locationDTO.getStateName() != null) {
+                    locationDistanceMap.put(locationDTO.getStateName(), distance);
+                }
+                maxDistance = Math.max(maxDistance, distance);
+                minDistance = Math.min(minDistance, distance);
+            }
+        }
+        if (maxDistance != minDistance) {
+            for (int id : eligibleInternshipIds) {
+                double distanceScore = (maxDistance - internshipLocationDistanceMap.get(id)) / (maxDistance - minDistance);
+                System.out.println(distanceScore);
+                preferenceScores.put(id, distanceScore + preferenceScores.getOrDefault(id, 0.0));
+            }
+        }
+    }
+    private LocationCoordinates getCityLocationCoordinates(String cityName) {
+        List<LocationCoordinates> locationCoordinates = cityCoordinatesJpaRepository.findCityCoordinatesByCityName(cityName);
+        if (locationCoordinates.isEmpty()) {
+            return null;
+        }
+        return locationCoordinates.get(0);
+    }
+
+    private LocationCoordinates getStateLocationCoordinates(String stateName) {
+        List<LocationCoordinates> locationCoordinates = stateCoordinatesJpaRepository.findStateCoordinatesByStateName(stateName);
+        if (locationCoordinates.isEmpty()) {
+            return null;
+        }
+        return locationCoordinates.get(0);
     }
 }
