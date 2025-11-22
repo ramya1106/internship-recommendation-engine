@@ -15,14 +15,14 @@ The system collects user preferences, applies machine learning models (Logistic 
 -  **Eligibility Filtering** – Filters internships based on qualification, age, and gender.
 -  **Advanced Eligibility Filtering** – Skill-based compatibility checks between user skills and internship requirements.
 -  **Database Integration** – Efficient storage and retrieval of user, internship, and recommendation data.  
--  **Preference-Based Scoring** - Based on applied count, mode preference.
+-  **Preference-Based Scoring** - Based on applied count, mode preference, preferred location, and internship location separation.
 ---
 
 ###  Upcoming Features
 -  **Voice Assistance** – Collect preferences through voice input and provide voice-over for internship descriptions.  
 -  **Multilingual Support** – Text and voice assistance in multiple languages for better accessibility.  
 -  **Feedback-Based Recommendations** – Refined internship suggestions based on user feedback and past choices.  
--  **Additional Preference-Based Scoring** – Based on posting time, location, and employment type. 
+-  **Additional Preference-Based Scoring** – Based on posting time and employment type. 
 -  **Score Normalization & Hybrid Ranking** – Normalize and combine multiple factors (preference score, ML regression score, feedback score) for improved ranking accuracy.  
 
 ---
@@ -173,13 +173,13 @@ Update it like this:
 
 ### API Endpoints  
 
-| Method | Endpoint | Description |
-|--------|-----------|-------------|
-| GET    | `/users/{userId}` | Fetch user details |
-| POST   | `/internships/filtered/{userId}` | Get internships for a user (via ML model) |
-| GET    | `/internship/details/{internshipId}` | Internship details |
-| POST    | `/internships/eligible/{userId}` | Get internships the user is eligible for |
-| POST    | `/internships/ranked/{userId}` | Get eligible internships ranked by preference scores |
+| Method | Endpoint | Request Body | Description |
+|--------|-----------|-----------|-------------|
+| GET    | `/users/{userId}` |-| Fetch user details |
+| POST   | `/internships/filtered/{userId}` |optional| Get internships for a user (via ML model) |
+| GET    | `/internship/details/{internshipId}` |-| Internship details |
+| POST    | `/internships/eligible/{userId}` |{"preferred_mode": "[preferred_mode]","preferred_city": "[city_name]","preferred_state": "[state_name]"}| Get internships the user is eligible for |
+| POST    | `/internships/ranked/{userId}` |-| Get eligible internships ranked by preference scores |
 
 
 The app will be available at: http://localhost:8080
