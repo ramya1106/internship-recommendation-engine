@@ -15,7 +15,7 @@ The system collects user preferences, applies machine learning models (Logistic 
 -  **Eligibility Filtering** – Filters internships based on qualification, age, and gender.
 -  **Advanced Eligibility Filtering** – Skill-based compatibility checks between user skills and internship requirements.
 -  **Database Integration** – Efficient storage and retrieval of user, internship, and recommendation data.  
--  **Preference-Based Scoring** - Based on applied count, mode preference, preferred location, and internship location separation.
+-  **Preference-Based Scoring** - Based on applied count, mode preference, distance between preferred location and internship location.
 ---
 
 ###  Upcoming Features
