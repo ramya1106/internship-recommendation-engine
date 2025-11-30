@@ -73,6 +73,20 @@ public interface InternshipJpaRepository extends JpaRepository<Internship, Integ
             c.latitude, c.longitude, s.stateName, s.latitude, s.longitude) FROM Internship i
             LEFT JOIN StateCoordinates s ON s.stateName = i.state
             LEFT JOIN CityCoordinates c ON c.cityName = i.district WHERE i.id IN :ids""")
-    List<LocationDTO> findAllLocationCoordinatesById(@Param("ids") List<Integer> internshipIds);
+    List<LocationDTO> findAllLocationCoordinatesById(@Param("ids") List<Integer> eligibleInternshipIds);
+
+    @Query("""
+            SELECT MAX(timestampdiff(HOUR, i.postingTime, CURRENT_TIMESTAMP)),
+            MIN(timestampdiff(HOUR, i.postingTime, CURRENT_TIMESTAMP))
+            FROM Internship i
+            WHERE i.id IN :ids""")
+    List<Object[]> getMaxAndMinPostingTimeDifference(@Param("ids") List<Integer> eligibleInternshipIds);
+
+    @Query("""
+            SELECT
+            i.id, timestampdiff(HOUR, i.postingTime, CURRENT_TIMESTAMP)
+            FROM Internship i
+            WHERE i.id IN :ids""")
+    List<Object[]> getAllPostingTimeDifferenceById(@Param("ids") List<Integer> eligibleInternshipIds);
 
 }
