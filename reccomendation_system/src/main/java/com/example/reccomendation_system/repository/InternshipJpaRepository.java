@@ -32,32 +32,6 @@ public interface InternshipJpaRepository extends JpaRepository<Internship, Integ
     List<Object[]> findMaxMinRatiosAndAppliedCounts(@Param("ids") List<Integer> eligibleInternshipIds);
 
     @Query("""
-            SELECT
-            CASE i.totalCount
-                WHEN 0 THEN NULL
-                ELSE (i.appliedCount * 1.0 / i.totalCount)
-            END,
-            i.appliedCount
-            FROM Internship i
-            WHERE i.id = :id""")
-    List<Object[]> findAppliedRatioAndAppliedCountById(@Param("id") int internshipId);
-
-    @Query("""
-            SELECT MAX(i.appliedCount * 1.0 / i.totalCount),
-            MIN(i.appliedCount * 1.0 / i.totalCount)
-            FROM Internship i
-            WHERE i.totalCount != 0
-            AND i.id IN :ids
-            """)
-    List<Object[]> findMaxMinRatios(@Param("ids") List<Integer> eligibleInternshipIds);
-
-    @Query("""
-            SELECT MAX(i.appliedCount), MIN(i.appliedCount) FROM
-            Internship i
-            WHERE i.id IN :ids""")
-    List<Object[]> findMaxMinAppliedCounts(@Param("ids") List<Integer> eligibleInternshipIds);
-
-    @Query("""
             SELECT i.id, i.appliedCount,
             CASE i.totalCount
                 WHEN 0 THEN NULL
